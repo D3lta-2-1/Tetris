@@ -7,8 +7,8 @@ target("tetris")
     add_packages("libsdl3")
     set_kind("binary")
     set_languages("cxx20")
-    add_files("src/*.cpp", "src/tetris/*.cpp")
-    add_headerfiles("src/*.hpp")
+    add_files("src/**.cpp")
+    add_headerfiles("src/**.hpp")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
