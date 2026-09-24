@@ -8,6 +8,7 @@
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
+#include <string>
 
 #define SDL_MAIN_USE_CALLBACKS
 #include "SDL3/SDL_main.h"
@@ -15,6 +16,8 @@
 #include "SDL3/SDL_video.h"
 #include "tetris.hpp"
 #include <memory>
+
+using namespace std::string_literals;
 
 namespace sdl {
 using Window = std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>;
@@ -45,12 +48,13 @@ public:
                          (tetris::Board::HEIGHT + 1) * BLOCK_SIZE, 0));
 
     if (this->window == nullptr)
-      throw std::runtime_error(SDL_GetError());
+      throw std::runtime_error("unable to open a Window:"s + SDL_GetError());
     this->renderer.reset(SDL_CreateRenderer(this->window.get(), nullptr));
     if (this->renderer == nullptr)
-      throw std::runtime_error(SDL_GetError());
-    if (SDL_SetRenderVSync(this->renderer.get(), SDL_RENDERER_VSYNC_ADAPTIVE))
-      throw std::runtime_error(SDL_GetError());
+      throw std::runtime_error("unable to create a renderer"s + SDL_GetError());
+    // TODO: add Vsync support.
+    /*if (SDL_SetRenderVSync(this->renderer.get(), SDL_RENDERER_VSYNC_ADAPTIVE))
+      throw std::runtime_error("failed to turn on VSYNC"s + SDL_GetError());*/
   }
 
   void set_draw_color(tetris::BlockColor color) {
@@ -109,6 +113,18 @@ public:
     }
   }
 
+  void draw_fast_placement() {
+    SDL_SetRenderDrawColor(this->renderer.get(), 60, 60, 60, 255);
+    auto block_count = this->game.fast_placemet.size();
+    for (auto i = 0; i < block_count; i++) {
+      auto pos = this->game.fast_placemet.get_block(i);
+      float screen_x = pos.x * BLOCK_SIZE;
+      float screen_y = (tetris::Board::HEIGHT - pos.y) * BLOCK_SIZE;
+      SDL_FRect rect = {screen_x, screen_y, BLOCK_SIZE, BLOCK_SIZE};
+      SDL_RenderFillRect(this->renderer.get(), &rect);
+    }
+  }
+
   SDL_AppResult on_iterate() {
     auto now = chrono::high_resolution_clock::now();
     auto elpased = now - this->last_tick_date;
@@ -121,6 +137,7 @@ public:
 
     SDL_SetRenderDrawColor(this->renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(this->renderer.get());
+    this->draw_fast_placement();
     this->draw_piece();
     this->draw_board();
     SDL_RenderPresent(this->renderer.get());
@@ -142,7 +159,7 @@ public:
       this->game.rotate_counter_clockwise();
       break;
     case SDL_SCANCODE_S:
-      if (this->game.tick()) {
+      if (this->game.accept_fast_placement()) {
         this->game = tetris::Game();
       }
       break;
@@ -168,13 +185,14 @@ public:
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
   try {
     if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO))
-      throw std::runtime_error(SDL_GetError());
+      throw std::runtime_error(std::string{"failed to init SDL: "} +
+                               SDL_GetError());
 
     auto app = std::make_unique<App>();
     *appstate = app.release();
 
   } catch (const std::exception &error) {
-    std::cerr << error.what() << std::endl;
+    std::cerr << "error while starting, " << error.what() << std::endl;
     return SDL_APP_FAILURE;
   }
   return SDL_APP_CONTINUE;

@@ -79,8 +79,11 @@ struct Game {
   std::uniform_int_distribution<> distrib;
   tetris::Board board;
   tetris::Piece piece;
+  tetris::Piece fast_placemet;
 
   Piece get_a_new_piece();
+  void replace_fast_piece();
+  bool accept_fast_placement();
   Game();
   void rotate_clockwise();
   void rotate_counter_clockwise();

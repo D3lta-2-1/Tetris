@@ -23,15 +23,17 @@ static std::array PIECES{
     tetris::Piece(pieces::Z, tetris::BlockColor::Red, Parity::Odd),
 };
 
-tetris::Game::Game() : piece(PIECES[0]), board() {
+tetris::Game::Game() : piece(PIECES[0]), board(), fast_placemet(PIECES[0]) {
   std::random_device rd;
   this->mt19937 = std::mt19937(rd());
   this->distrib = std::uniform_int_distribution<>(0, PIECES.size() - 1);
   this->piece = this->get_a_new_piece();
+  this->replace_fast_piece();
 }
 
 tetris::Piece tetris::Game::get_a_new_piece() {
   return PIECES[this->distrib(this->mt19937)];
+  this->replace_fast_piece();
 }
 
 void tetris::Game::rotate_clockwise() {
@@ -40,6 +42,7 @@ void tetris::Game::rotate_clockwise() {
   if (!this->board.collide(copy)) {
     this->piece = copy;
   }
+  this->replace_fast_piece();
 }
 
 void tetris::Game::rotate_counter_clockwise() {
@@ -48,6 +51,7 @@ void tetris::Game::rotate_counter_clockwise() {
   if (!this->board.collide(copy)) {
     this->piece = copy;
   }
+  this->replace_fast_piece();
 }
 
 void tetris::Game::left() {
@@ -56,6 +60,7 @@ void tetris::Game::left() {
   if (!this->board.collide(copy)) {
     this->piece = copy;
   }
+  this->replace_fast_piece();
 }
 
 void tetris::Game::right() {
@@ -64,6 +69,26 @@ void tetris::Game::right() {
   if (!this->board.collide(copy)) {
     this->piece = copy;
   }
+  this->replace_fast_piece();
+}
+
+void tetris::Game::replace_fast_piece() {
+  auto copy = this->piece;
+  do {
+    copy.pos.y--;
+  } while (!this->board.collide(copy));
+  copy.pos.y++;
+  this->fast_placemet = copy;
+}
+
+bool tetris::Game::accept_fast_placement() {
+  if (this->board.place(this->fast_placemet))
+    return true; // we overfilled the board
+  this->board.clear_complete_raw();
+  this->get_a_new_piece();
+  this->piece = this->get_a_new_piece();
+  this->replace_fast_piece();
+  return false;
 }
 
 // move the piece down, if it colide with the grid, place the piece in the grid
@@ -79,5 +104,6 @@ bool tetris::Game::tick() {
 
   this->board.clear_complete_raw();
   this->piece = this->get_a_new_piece();
+  this->replace_fast_piece();
   return false;
 }
