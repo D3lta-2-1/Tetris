@@ -14,7 +14,7 @@
 #include "SDL3/SDL_main.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
-#include "tetris.hpp"
+#include "include/tetris.hpp"
 #include <memory>
 
 using namespace std::string_literals;

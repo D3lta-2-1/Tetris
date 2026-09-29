@@ -1,4 +1,4 @@
-#include "../tetris.hpp"
+#include "../include/tetris.hpp"
 #include <exception>
 
 tetris::Piece::Piece(std::span<const Vec2> blocks, BlockColor color,

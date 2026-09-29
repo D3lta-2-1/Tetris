@@ -1,20 +1,10 @@
 #pragma once
+#include "vec2.hpp"
 #include <array>
 #include <cstddef>
 #include <random>
 #include <span>
 #include <vector>
-
-struct Vec2 {
-  Vec2();
-  Vec2(int x, int y);
-
-  int x;
-  int y;
-
-  friend Vec2 operator+(Vec2 lhs, Vec2 rhs);
-  void operator+=(Vec2 other);
-};
 
 namespace tetris {
 enum class BlockColor {
