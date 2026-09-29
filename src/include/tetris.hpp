@@ -1,4 +1,6 @@
-#pragma once
+#ifndef TETRIS_HPP
+#define TETRIS_HPP
+
 #include "vec2.hpp"
 #include <array>
 #include <cstddef>
@@ -29,7 +31,7 @@ public:
 // constexpr std::array<Vec2, 2>
 
 struct Piece {
-  enum class Rotation { None, QuarterOfATurn, HalfATurn, ThreeQuarterOfATurn };
+  enum class Rotation { None, Left, Flipped, Right };
   enum class Parity { Odd, Even };
   Rotation rotation;
   Parity parity;
@@ -84,3 +86,5 @@ struct Game {
   bool tick();
 };
 } // namespace tetris
+
+#endif

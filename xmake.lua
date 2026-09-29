@@ -8,7 +8,7 @@ target("tetris")
     set_kind("binary")
     set_languages("cxx20")
     add_files("src/**.cpp")
-    add_headerfiles("src/include/**.hpp")
+    add_headerfiles("src/include/*.hpp")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io

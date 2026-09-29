@@ -9,15 +9,15 @@ tetris::Piece::Piece(std::span<const Vec2> blocks, BlockColor color,
 void tetris::Piece::rotate_counter_clockwise() {
   switch (this->rotation) {
   case Rotation::None:
-    this->rotation = Rotation::QuarterOfATurn;
+    this->rotation = Rotation::Left;
     break;
-  case Rotation::QuarterOfATurn:
-    this->rotation = Rotation::HalfATurn;
+  case Rotation::Left:
+    this->rotation = Rotation::Flipped;
     break;
-  case Rotation::HalfATurn:
-    this->rotation = Rotation::ThreeQuarterOfATurn;
+  case Rotation::Flipped:
+    this->rotation = Rotation::Right;
     break;
-  case Rotation::ThreeQuarterOfATurn:
+  case Rotation::Right:
     this->rotation = Rotation::None;
     break;
   }
@@ -26,15 +26,15 @@ void tetris::Piece::rotate_counter_clockwise() {
 void tetris::Piece::rotate_clockwise() {
   switch (this->rotation) {
   case Rotation::None:
-    this->rotation = Rotation::ThreeQuarterOfATurn;
+    this->rotation = Rotation::Right;
     break;
-  case Rotation::ThreeQuarterOfATurn:
-    this->rotation = Rotation::HalfATurn;
+  case Rotation::Right:
+    this->rotation = Rotation::Flipped;
     break;
-  case Rotation::HalfATurn:
-    this->rotation = Rotation::QuarterOfATurn;
+  case Rotation::Flipped:
+    this->rotation = Rotation::Left;
     break;
-  case Rotation::QuarterOfATurn:
+  case Rotation::Left:
     this->rotation = Rotation::None;
     break;
   }
@@ -45,11 +45,11 @@ Vec2 tetris::Piece::apply_rotation(Vec2 point) {
   switch (this->rotation) {
   case Rotation::None:
     return Vec2{point.x, point.y};
-  case Rotation::QuarterOfATurn:
+  case Rotation::Left:
     return Vec2{-point.y, point.x};
-  case Rotation::HalfATurn:
+  case Rotation::Flipped:
     return Vec2{-point.x, -point.y};
-  case Rotation::ThreeQuarterOfATurn:
+  case Rotation::Right:
     return Vec2{point.y, -point.x};
   }
   std::terminate();
@@ -61,11 +61,11 @@ Vec2 tetris::Piece::rotation_correction() {
   switch (this->rotation) {
   case Rotation::None:
     return Vec2{0, 0};
-  case Rotation::QuarterOfATurn:
+  case Rotation::Left:
     return Vec2{1, 0};
-  case Rotation::HalfATurn:
+  case Rotation::Flipped:
     return Vec2{1, 1};
-  case Rotation::ThreeQuarterOfATurn:
+  case Rotation::Right:
     return Vec2{0, 1};
   }
   std::terminate();
