@@ -6,7 +6,7 @@
 #include <chrono>
 #include <exception>
 #include <iostream>
-#include <ostream>
+#include <print>
 #include <stdexcept>
 #include <string>
 
@@ -14,8 +14,8 @@
 #include "SDL3/SDL_main.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
-#include "include/tetris.hpp"
 #include <memory>
+#include <tetris.hpp>
 
 using namespace std::string_literals;
 
@@ -192,7 +192,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     *appstate = app.release();
 
   } catch (const std::exception &error) {
-    std::cerr << "error while starting, " << error.what() << std::endl;
+    std::println(std::cerr, "error while starting {}", error.what());
     return SDL_APP_FAILURE;
   }
   return SDL_APP_CONTINUE;

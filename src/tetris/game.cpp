@@ -1,4 +1,6 @@
-#include "../include/tetris.hpp"
+
+#include "tetris.hpp"
+#include "vec2.hpp"
 #include <array>
 #include <random>
 

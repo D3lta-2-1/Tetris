@@ -1,14 +1,13 @@
 add_rules("mode.debug", "mode.release")
 
-
 add_requires("libsdl3")
 
 target("tetris")
     add_packages("libsdl3")
     set_kind("binary")
-    set_languages("cxx20")
+    set_languages("cxx23")
     add_files("src/**.cpp")
-    add_headerfiles("src/include/*.hpp")
+    add_includedirs("include")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io

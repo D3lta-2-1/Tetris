@@ -1,6 +1,7 @@
-#include "../include/tetris.hpp"
+
+#include "tetris.hpp"
+#include "vector"
 #include <array>
-#include <vector>
 
 tetris::Block::Block() : color(BlockColor::Empty) {}
 
